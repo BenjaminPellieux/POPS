@@ -1,25 +1,27 @@
 import socket
 
+current_res: int = 0
 
-def client_program():
-    host = socket.gethostname()  # as both code is running on same pc
-    port = 5000  # socket server port number
+class Client():
+    def __init__(self) -> None:
+        PORT = 5000
+        self.host = "localhost"  # as both code is running on same pc
+          # socket server port number
 
-    client_socket = socket.socket()  # instantiate
-    client_socket.connect((host, port))  # connect to the server
+        self.client_socket = socket.socket()  # instantiate
+        self.client_socket.connect((self.host, PORT))  # connect to the server
+          # receive response
 
-    message = input(" -> ")  # take input
+           
 
-    while message.lower().strip() != 'bye':
-        client_socket.send(message.encode())  # send message
-        data = client_socket.recv(1024).decode()  # receive response
+def read_msg(msg: str)-> None:
+    print(f'LOG: Received from server: {msg=}')  # show in terminal
+    pin, level = msg.split("|")
+    print(f'GPIO.output({pin}, {"GPIO.HIGH" if int(level) else "GPIO.LOW"})')
 
-        print('Received from server: ' + data)  # show in terminal
+My_Client: Client =  Client() 
 
-        message = input(" -> ")  # again take input
-
-    client_socket.close()  # close the connection
-
-
-if __name__ == '__main__':
-    client_program()
+while True:
+    msg =  My_Client.client_socket.recv(1024).decode()
+    if msg:
+        read_msg(msg)

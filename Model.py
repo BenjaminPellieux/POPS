@@ -41,6 +41,7 @@ class SDM():
                     return None 
         return None
     
+    
     def get_value_with_register(self,  unit : str) -> float:
         for i in range(len(REGISTER)):
             if unit == REGISTER[i]:
@@ -51,8 +52,13 @@ class SDM():
                     return None
         return None
 
-
-
+class Client():
+    def __init__(self,par_host: str = "localhost", par_port: int = 5000) -> None:
+        self.port = par_port
+        self.host = par_host # as both code is running on same pc
+        self.client_socket = socket.socket()  # instantiate
+        self.client_socket.connect((self.host, self.port))  # connect to the server
+    
 class Server():
     # get the hostname
     def __init__(self) -> None:    

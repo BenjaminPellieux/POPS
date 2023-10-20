@@ -10,12 +10,12 @@ Ce Side projet à pour but d'Optimiser l'utilisation de l'énergie produite par 
 ### Requierment
 
 
-[Python3]('https://www.python.org/downloads/release/python-31013/') 
-[tinytuya]('https://github.com/jasonacox/tinytuya')
+[Python3](https://www.python.org/downloads/release/python-31013/) 
+[tinytuya](https://github.com/jasonacox/tinytuya)
 
 ### Cloud platform
 
-Utilisation de la platforme cloud [Tuya IoT]('https://iot.tuya.com/') 
+Utilisation de la platforme cloud [Tuya IoT](https://iot.tuya.com/) 
 
 
 ## Identification
@@ -57,7 +57,7 @@ Product ID = keyjcr45yfptp7h7
 [Valid Broadcast]:
     Address = 192.168.234.10   
     Device ID = 058206027c87ce8d000e (len:20)  
-    Local Key = xHIF6U9]#2ppPYoz 
+    Local Key = X5j=@B3{#6OZ>j:b
     Version = 3.3  
     Type = default, 
     MAC = 7c:87:ce:8d:00:0e

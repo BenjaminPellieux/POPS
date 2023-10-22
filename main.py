@@ -1,8 +1,8 @@
 from tinytuya import OutletDevice
 from requests import get 
 from time import sleep
-
-from sonoff_ewelink_cube_client_api import EWelinkCube
+from sonoff import Sonoff
+import config
 
 
 LEVEL = 500
@@ -10,17 +10,37 @@ M_REVERSE = 'REVERSE'
 NB_RELAY = 4
 DELAY = 10
 HOST_IP = "192.168.1.41"
+MAIN_IP = "192.168.234.17"
 HOST_PORT = 80
 current_res = 1 # Prochaine resistance a allumer
+DEBUG = 1
 
 
-def send_request(value: int, resistance: int) -> None:
+
+
+def send_request(value: int, resistance: int, IP: str = None) -> None:
     params = {
         'cmnd': f'Power{resistance} {value}',
     }  
-    response = get(f'http://{HOST_IP}/cm', params=params)
-    
+    try:
+        response = get(f'http://{HOST_IP}/cm', params=params)
+    except Exception as e:
+        print(f"[ERROR] Une erreur est survenue \n {e}")
+        response = None
+
     print(f"[LOG] request: http://{HOST_IP}/cm?{params=} \n {response=}")
+
+def switch_main_accu(value: int):
+    params = {
+        'cmnd': f'Power {value}',
+    }
+    try:
+        response = get(f'http://{MAIN_IP}/cm', params=params)
+    except Exception as e:
+        print(f"[ERROR] Une erreur est survenue \n {e}")
+        response = None
+
+    print(f"[LOG] request: http://{MAIN_IP}/m?{params=} \n {response=}")
 
 
 
@@ -49,18 +69,16 @@ Air = OutletDevice(
     local_key='Wdnu;V8xS(Q[6`GU', 
     version=3.3)
 
-Main_Accu = OutletDevice(
-    dev_id='bff0c8721947655b1avs5e',
-    address='192.168.234.11',      # Or set to 'Auto' to auto-discover IP address
-    local_key='Wdnu;V8xS(Q[6`GU', 
-    version=3.3)
+# init_res()
 
-init_res()
+switch_main_accu(1)
+sleep(2)
+switch_main_accu(0)
 
 # Get Status
 ballon_data = Ballon.status()
 air_data = Air.status()
-while 1:
+while not DEBUG:
 
     try:
         meter_data: dict = Smart_Meter.status()['dps']

@@ -33,7 +33,7 @@ Product ID = keyquxnsj75xc8se
 [Valid Broadcast]:
     Address = 192.168.234.11   
     Device ID = bff0c8721947655b1avs5e (len:22)  
-    Local Key =   
+    Local Key = Wdnu;V8xS(Q[6`GU 
     Version = 3.3  
     Type = default, 
     MAC = 

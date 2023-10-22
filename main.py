@@ -1,4 +1,35 @@
 from tinytuya import OutletDevice
+from requests import get 
+from time import sleep
+
+from sonoff_ewelink_cube_client_api import EWelinkCube
+
+
+LEVEL = 500
+M_REVERSE = 'REVERSE'
+NB_RELAY = 4
+DELAY = 10
+HOST_IP = "192.168.1.41"
+HOST_PORT = 80
+current_res = 1 # Prochaine resistance a allumer
+
+
+def send_request(value: int, resistance: int) -> None:
+    params = {
+        'cmnd': f'Power{resistance} {value}',
+    }  
+    response = get(f'http://{HOST_IP}/cm', params=params)
+    
+    print(f"[LOG] request: http://{HOST_IP}/cm?{params=} \n {response=}")
+
+
+
+def init_res():
+    for i in range(1,5):
+        print(f"[LOG] init rest: {i} at value: 0")
+        send_request(0,i)
+        sleep(2)
+
 # Connect to Device
 Ballon = OutletDevice(
     dev_id='058206027c87ce8d000e',
@@ -12,17 +43,60 @@ Smart_Meter = OutletDevice(
     local_key='xHIF6U9]#2ppPYoz', 
     version=3.4)
 
+Air = OutletDevice(
+    dev_id='bff0c8721947655b1avs5e',
+    address='192.168.234.11',      # Or set to 'Auto' to auto-discover IP address
+    local_key='Wdnu;V8xS(Q[6`GU', 
+    version=3.3)
 
+Main_Accu = OutletDevice(
+    dev_id='bff0c8721947655b1avs5e',
+    address='192.168.234.11',      # Or set to 'Auto' to auto-discover IP address
+    local_key='Wdnu;V8xS(Q[6`GU', 
+    version=3.3)
+
+init_res()
 
 # Get Status
 ballon_data = Ballon.status()
-meter_data = Smart_Meter.status()
-print(f'[INFO] Ballon {ballon_data=}')
-print(f'[INFO] Meter {meter_data=}')
+air_data = Air.status()
+while 1:
+
+    try:
+        meter_data: dict = Smart_Meter.status()['dps']
+        mode: str = meter_data['102']
+        power: int = abs(meter_data['115'] / 10)
+        print(f'[INFO] Meter \n[MODE]: {mode} \n[POWER]: {power}w')
+
+    except Exception as e:
+        print(f"[ERROR] Une erreur est survenue \n {e}")
+
+    if mode == M_REVERSE: 
+        if power == None:
+            print("[ERROR] Une erreur est survenue")
+            continue
+
+        if power > LEVEL and current_res <= NB_RELAY:
+            send_request(1, current_res)
+            print(f'[LOG] {power}W')
+            current_res += 1
+          
+    else:
+        if current_res >= 1:
+            send_request(0,current_res)
+            if current_res != 1:
+                current_res -= 1
 
 
+    sleep(DELAY)
+#print(f'[INFO] Meter {air_data=}')
+# send_request(0,1)
 # Turn On
 #ballon.turn_on()
-
 # Turn Off
-Ballon.turn_off()
+# Ballon.turn_off()
+#Air.turn_on()
+
+
+
+

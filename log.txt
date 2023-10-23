@@ -1,0 +1,80 @@
+23/10/2023  22:31:40 [LOG] request: http://192.168.234.17/m?params={'cmnd': 'Power 1'} 
+ response=<Response [200]>+
+23/10/2023  22:31:43 [INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 513.1w+
+23/10/2023  22:31:54 [INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 652.3w+
+23/10/2023  22:32:05 [INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 517.3w+
+23/10/2023  22:32:17 [INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 516.3w+
+23/10/2023  22:32:21
+[LOG] request: http://192.168.234.17/m?params={'cmnd': 'Power 1'} 
+ response=<Response [200]>+
+23/10/2023  22:32:23
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 516.3w+
+23/10/2023  22:32:35
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 514.1w+
+23/10/2023  22:32:46
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 644.0w+
+23/10/2023  22:32:57
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 514.2w+
+23/10/2023  22:33:08
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 648.7w+
+23/10/2023  22:33:18
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 653.6w+
+23/10/2023  22:33:28
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 512.7w+
+23/10/2023  22:33:40
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 652.9w+
+23/10/2023  22:33:51
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 522.9w+
+23/10/2023  22:34:01
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 653.8w+
+23/10/2023  22:34:13
+[LOG] request: http://192.168.234.17/m?params={'cmnd': 'Power 1'} 
+ response=<Response [200]>
+23/10/2023  22:34:13
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 653.5w
+23/10/2023  22:34:23
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 512.1w
+23/10/2023  22:34:34
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 648.0w
+23/10/2023  22:34:45
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 652.0w
+23/10/2023  22:34:56
+[INFO] Meter 
+[MODE]: FORWARD 
+[POWER]: 645.3w

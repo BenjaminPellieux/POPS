@@ -11,7 +11,7 @@ LEVEL = 550
 M_REVERSE = 'REVERSE'
 NB_RELAY = 4
 DELAY = 10
-HOST_IP = "192.168.1.41"
+SWITCH1_IP = "192.168.1.41"
 MAIN_IP = "192.168.234.17"
 DEBUG = 0
 
@@ -33,42 +33,45 @@ class Gestionaire_res:
     def __run__(self):
         while not DEBUG:
 
+            mode, power = None, None
             try:
                 meter_data: dict = self.Smart_Meter.status()['dps']
-                mode: str = meter_data['102']
-                power: int = abs(meter_data['115'] / 10)
-                print(f'[INFO] Meter \n[MODE]: {mode} \n[POWER]: {power}w')
-                self.log_file(f'[INFO] Meter \n[MODE]: {mode} \n[POWER]: {power}w')
-
 
             except Exception as e:
-                print(f"[ERROR] Une erreur est survenue \n {e}")
-                self.log_file(f"[ERROR] Une erreur est survenue \n {e}")
+                print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[ERROR] Une erreur est survenue \n {e}")
+                self.log_file(f"[ERROR] Une erreur est survenue lors de la recupérration des données\n {e}")
+                continue
 
-            if mode == M_REVERSE: 
+            try:
+                mode: str = meter_data['102']
+                power: int = abs(meter_data['115'] / 10)
+            except:
+                print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[ERROR] Une erreur est survenue \n {e}")
+                self.log_file(f"[ERROR] Une erreur est survenue lors de la lecture des données\n {e}")
+                continue
+            
+            print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[INFO] Meter \n[MODE]: {mode} \n[POWER]: {power}w")
+            self.log_file(f'[INFO] Meter \n[MODE]: {mode} \n[POWER]: {power}w')
+
+
+            if mode == M_REVERSE and power > 50: 
                 
-                if self.main_swict_state == 1:
+                if self.main_swict_state == OFF:
                     self.control_main_switch(ON)
-                    
-                    sleep(30)
+                    sleep(40)
                     continue
 
-                if power == None:
-                    print("[ERROR] Une erreur est survenue")
-                    self.log_file("[ERROR] Une erreur est survenue")
-                    continue
 
                 if power > LEVEL and self.current_res <= NB_RELAY:
-                    self.control_secondary_switch(1, self.current_res)
+                    if self.control_secondary_switch(1, self.current_res):
+                        self.current_res += 1
                     print(f'[LOG] {power}W')
                     self.log_file(f'[LOG] {power}W')
-                    self.current_res += 1
+                    
                 
-            else:
-
-                if self.current_res >= 1:
-                    self.control_secondary_switch(0,self.current_res)
-                    if self.current_res != 1:
+            elif self.current_res >= 1 and self.main_swict_state == ON:
+                    ret = self.control_secondary_switch(0,self.current_res)
+                    if ret and self.current_res != 1:
                         self.current_res -= 1
                     else:
                         self.control_main_switch(OFF)
@@ -77,7 +80,7 @@ class Gestionaire_res:
             sleep(DELAY)
 
     def log_file(self,text):
-        with open("log.txt","a+") as log:
+        with open("log2.txt","a+") as log:
             log.write(f'{datetime.now().strftime("%d/%m/%Y  %H:%M:%S")}\n{text}\n')
             log.close()
 
@@ -89,28 +92,29 @@ class Gestionaire_res:
             response = get(f'http://{MAIN_IP}/cm', params=params)
             self.main_swict_state = value
         except Exception as e:
-            print(f"[ERROR] Une erreur est survenue \n {e}")
+            print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[ERROR] Une erreur est survenue \n {e}")
             self.log_file(f"[ERROR] Une erreur est survenue \n {e}")
             response = None
         
-        print(f"[LOG] request: http://{MAIN_IP}/m?{params=} \n {response=}")
-        self.log_file(f"[LOG] request: http://{MAIN_IP}/m?{params=} \n {response=}")
+        print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[LOG] request: http://{MAIN_IP}/m?{params=} \n {response=}")
+        self.log_file(f"[LOG] request: http://{MAIN_IP}/cm?{params=} \n {response=}")
 
 
-    def control_secondary_switch(self,value: bool, resistance: int):
+    def control_secondary_switch(self,value: bool, resistance: int) -> bool:
         params = {
         'cmnd': f'Power{resistance} {value}',
         }  
         try:
-            response = get(f'http://{HOST_IP}/cm', params=params)
+            response = get(f'http://{SWITCH1_IP}/cm', params=params)
         except Exception as e:
-            print(f"[ERROR] Une erreur est survenue \n {e}")
+            print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[ERROR] Une erreur est survenue \n {e}")
             self.log_file(f"[ERROR] Une erreur est survenue \n {e}")
             response = None
+            return False
 
-        print(f"[LOG] request: http://{HOST_IP}/cm?{params=} \n {response=}")
-        self.log_file(f"[LOG] request: http://{MAIN_IP}/m?{params=} \n {response=}")
-        
+        print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[LOG] request: http://{SWITCH1_IP}/cm?{params=} \n {response=}")
+        self.log_file(f"[LOG] request: http://{SWITCH1_IP}/cm?{params=} \n {response=}")
+        return True
 
 
 bob: Gestionaire_res = Gestionaire_res()

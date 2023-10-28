@@ -80,7 +80,7 @@ class Gestionaire_res:
             sleep(DELAY)
 
     def log_file(self,text):
-        with open(f'{datetime.now().strftime("%d/%m/%Y")}_log.txt',"a+") as log:
+        with open(f'{datetime.now().strftime("%Y%M%d")}_log.txt',"a+") as log:
             log.write(f'{datetime.now().strftime("%d/%m/%Y  %H:%M:%S")}\n{text}\n')
             log.close()
 

@@ -45,7 +45,7 @@ class Gestionaire_res:
             try:
                 mode: str = meter_data['102']
                 power: int = abs(meter_data['115'] / 10)
-            except:
+            except Exception as e:
                 print(f"{datetime.now().strftime('%d/%m/%Y  %H:%M:%S')}\n[ERROR] Une erreur est survenue \n {e}")
                 self.log_file(f"[ERROR] Une erreur est survenue lors de la lecture des données\n {e}")
                 continue
@@ -80,7 +80,7 @@ class Gestionaire_res:
             sleep(DELAY)
 
     def log_file(self,text):
-        with open("log2.txt","a+") as log:
+        with open(f'{datetime.now().strftime("%d/%m/%Y")}_log.txt',"a+") as log:
             log.write(f'{datetime.now().strftime("%d/%m/%Y  %H:%M:%S")}\n{text}\n')
             log.close()
 
